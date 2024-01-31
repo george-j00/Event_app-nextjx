@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { RedirectToSignIn, SignedOut, SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedOut, SignedIn, UserButton } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 
 const Header = () => {
