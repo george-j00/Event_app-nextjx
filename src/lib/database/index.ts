@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// caching the database connection . so that no need to connect repeatedly. 
+
 let cached = (global as any).mongoose || { conn: null, promise: null };
 
 export const connectToDatabase = async () => {
