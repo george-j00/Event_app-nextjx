@@ -1,6 +1,6 @@
 "use server";
 
-import { CreateEventParams, DeleteEventParams, GetAllEventsParams, GetRelatedEventsByCategoryParams } from "@/types";
+import { CreateEventParams, DeleteEventParams, GetAllEventsParams, GetEventsByUserParams, GetRelatedEventsByCategoryParams, UpdateEventParams } from "@/types";
 import { connectToDatabase } from "../database";
 import User from "../database/models/user.model";
 import Event from "../database/models/event.model";
@@ -36,7 +36,7 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
       category: event.categoryId,
       organizer: userId,
     });
-    //   revalidatePath(path)
+      revalidatePath(path)
     return JSON.parse(JSON.stringify(newEvent));
   } catch (error) {
     handleError(error);
@@ -83,8 +83,8 @@ export async function getAllEvents({ query, limit = 6, page, category }: GetAllE
   } catch (error) {
     handleError(error)
   }
+  
 }
-
 export async function deleteEvent({ eventId, path }: DeleteEventParams) {
   try {
     await connectToDatabase()
@@ -95,7 +95,6 @@ export async function deleteEvent({ eventId, path }: DeleteEventParams) {
     handleError(error)
   }
 }
-
 
 export async function getRelatedEventsByCategory({
   categoryId,
@@ -121,5 +120,42 @@ export async function getRelatedEventsByCategory({
   } catch (error) {
     handleError(error)
   }
+}
+
+export async function updateEvent({ event, path }: UpdateEventParams) {
+  try {
+    await connectToDatabase();
+
+    const updateEvent = await Event.findByIdAndUpdate(event , {...event} , {new : true});
+
+    if (!updateEvent) throw new Error("Event not found");
+    revalidatePath(path);
+    return JSON.parse(JSON.stringify(updateEvent));
+  } catch (error) { 
+    handleError(error);
+  }
+}
+
+export async function getOrganizedEvents({ userId , limit , page }:GetEventsByUserParams) {
+  try {
+    await connectToDatabase()
+
+    const skipAmount = (Number(page) - 1) * limit
+    const eventsQuery  = Event.find({organizer: userId})
+      .sort({ createdAt: 'desc' })
+      .skip(skipAmount) 
+      .limit(limit)
+
+      const events = await populateEvent(eventsQuery)
+    const eventsCount = await Event.countDocuments(events)
+      
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages: Math.ceil(eventsCount / limit),
+    }
+  } catch (error) {
+    handleError(error)
+  }
+  
 }
 
