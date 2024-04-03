@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, Dispatch, SetStateAction } from "react";
-// import type  {FileWithPath}  from '@uploadthing/react'
 import { useDropzone } from "@uploadthing/react/hooks";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
 import { Button } from "@/src/components/ui/button";
 import { convertFileToUrl } from "@/src/lib/utils";
+import Image from "next/image";
 
 type FileUploaderProps = {
   onFieldChange: (url: string) => void;
@@ -39,7 +39,7 @@ export function FileUploader({
 
       {imageUrl ? (
         <div className="flex h-full w-full flex-1 justify-center ">
-          <img
+          <Image
             src={imageUrl}
             alt="image"
             width={250}
@@ -49,7 +49,7 @@ export function FileUploader({
         </div>
       ) : (
         <div className="flex-center flex-col py-5 text-grey-500">
-          <img
+          <Image
             src="/assets/icons/upload.svg"
             width={77}
             height={77}

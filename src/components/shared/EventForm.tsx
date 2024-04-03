@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation";
 // import { createEvent, updateEvent } from "@/lib/actions/event.actions"
 import { IEvent } from "@/src/lib/database/models/event.model";
 import { DropdownMenu } from "../ui/dropdown-menu";
-import router from "next/router";
 import Dropdown from "./Dropdown";
 import { FileUploader } from "./FileUploader";
 import { useUploadThing } from "@/src/lib/uploadthing";
@@ -129,7 +128,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
             name="title"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormControl>
+                <FormControl> 
                   <Input
                     placeholder="Event title"
                     {...field}
